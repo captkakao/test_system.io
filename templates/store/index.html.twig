@@ -10,11 +10,14 @@
 
 <div class="example-wrapper">
     <h1>Welcome to online store</h1>
+    <h2>List of stores</h2>
 
-    This friendly message is coming from:
     <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
+    {% for store in stores %}
+        <li>
+            <a href="{{ path('store_detail', {storeId: store.id}) }}">{{ store.name }}</a>
+        </li>
+    {% endfor %}
     </ul>
 </div>
 {% endblock %}

@@ -24,9 +24,8 @@ class Product
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Store $storeId = null;
+    #[ORM\ManyToOne(targetEntity: Store::class, inversedBy: 'products')]
+    private $store = null;
 
     public function getId(): ?int
     {
@@ -69,15 +68,8 @@ class Product
         return $this;
     }
 
-    public function getStoreId(): ?Store
+    public function getCategory(): ?Store
     {
-        return $this->storeId;
-    }
-
-    public function setStoreId(Store $storeId): self
-    {
-        $this->storeId = $storeId;
-
-        return $this;
+        return $this->store;
     }
 }

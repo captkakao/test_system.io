@@ -3,11 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\StoreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\InverseJoinColumn;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\JoinTable;
-use Doctrine\ORM\Mapping\ManyToMany;
 
 #[ORM\Entity(repositoryClass: StoreRepository::class)]
 #[ORM\Table(name: '`stores`')]
@@ -26,6 +24,11 @@ class Store
 
     #[ORM\OneToMany(mappedBy: 'store', targetEntity: StoreOwner::class)]
     private $owners = null;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -54,5 +57,13 @@ class Store
         $this->description = $description;
 
         return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
     }
 }

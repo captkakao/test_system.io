@@ -23,7 +23,7 @@ final class Version20230403141044 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE "products_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "stores_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE "products" (id INT NOT NULL, store_id INT NOT NULL, name VARCHAR(255) NOT NULL, description TEXT NOT NULL, price DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_B3BA5A5A37AC84E ON "products" (store_id)');
+        $this->addSql('CREATE INDEX UNIQ_B3BA5A5A37AC84E ON "products" (store_id)');
         $this->addSql('CREATE TABLE "stores" (id INT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('ALTER TABLE "products" ADD CONSTRAINT FK_B3BA5A5A37AC84E FOREIGN KEY (store_id) REFERENCES "stores" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
