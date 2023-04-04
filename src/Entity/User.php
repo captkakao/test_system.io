@@ -27,7 +27,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private ?string $password;
 
-    #[ORM\Column(type: 'string', length: 11, unique: true)]
+    #[ORM\Column(type: 'string', length: 18, unique: true)]
     private ?string $taxNumber;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: StoreOwner::class)]

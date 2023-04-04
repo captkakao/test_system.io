@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Country;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\AppCustomAuthenticator;
@@ -12,19 +13,34 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppCustomAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        UserAuthenticatorInterface $userAuthenticator,
+        AppCustomAuthenticator $authenticator,
+        EntityManagerInterface $entityManager
+    ): Response {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+
+        $countries = $entityManager->getRepository(Country::class)->findAll();
+        $countryChoices = [];
+        foreach ($countries as $country) {
+            $countryChoices[$country->getName()] = $country->getCode();
+        }
+
+        $formOptions = [
+            'countryChoices' => $countryChoices,
+        ];
+
+        $form = $this->createForm(RegistrationFormType::class, $formOptions);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
+            $user->setEmail($form->get('email')->getData());
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -32,9 +48,10 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            $taxNumber = $form->get('countryCode')->getData() . $this->generateUniqueTaxNumber();
+            $user->setTaxNumber($taxNumber);
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
 
             return $userAuthenticator->authenticateUser(
                 $user,
@@ -46,5 +63,10 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    private function generateUniqueTaxNumber(): string
+    {
+        return mt_rand(1000, 9999) . time();
     }
 }
