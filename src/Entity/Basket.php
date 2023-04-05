@@ -24,10 +24,11 @@ class Basket
     #[ORM\Column]
     private ?int $count = null;
 
-    public function __construct(User $buser, Good $good)
+    public function __construct(User $buser, Good $good, int $count = 1)
     {
         $this->buser = $buser;
         $this->good  = $good;
+        $this->count = $count;
     }
 
     public function getId(): ?int

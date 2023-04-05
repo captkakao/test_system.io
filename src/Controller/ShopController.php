@@ -12,8 +12,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ShopController extends AbstractController
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly ShopRepository $shopRepository)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ShopRepository $shopRepository
+    ) {
     }
 
     #[Route('/', name: 'home_page')]
@@ -38,7 +40,10 @@ class ShopController extends AbstractController
 
         if ($currentUser = $this->getUser()) {
             $basketRepository = $this->entityManager->getRepository(Basket::class);
-            $viewData['basketItemCount'] = $basketRepository->getCount($currentUser->getId());
+            $basketItemCount  = $basketRepository->getCount($currentUser->getId());
+            if ($basketItemCount) {
+                $viewData['basketItemCount'] = $basketItemCount;
+            }
         }
 
         return $this->render('shop/detail.html.twig', $viewData);
