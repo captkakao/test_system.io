@@ -65,7 +65,7 @@ class BasketController extends AbstractController
 
         $totalSum = 0;
         foreach ($products as $product) {
-            $totalSum += $product['price'];
+            $totalSum += $product['price'] * $product['count'];
         }
         $totalSumWithTax = $totalSum + ($totalSum * $countryTax->getTaxPercentage()) / 100;
 
