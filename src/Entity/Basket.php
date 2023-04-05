@@ -21,6 +21,9 @@ class Basket
     #[ORM\JoinColumn(nullable: false)]
     private ?Good $good = null;
 
+    #[ORM\Column]
+    private ?int $count = null;
+
     public function __construct(User $buser, Good $good)
     {
         $this->buser = $buser;
@@ -52,6 +55,18 @@ class Basket
     public function setGood(?Good $good): self
     {
         $this->good = $good;
+
+        return $this;
+    }
+
+    public function getCount(): ?int
+    {
+        return $this->count;
+    }
+
+    public function setCount(int $count): self
+    {
+        $this->count = $count;
 
         return $this;
     }

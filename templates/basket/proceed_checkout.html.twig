@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BasketController!{% endblock %}
+{% block title %}Proceed to checkout!{% endblock %}
 
 {% block body %}
     <style>
@@ -19,11 +19,12 @@
 
     <div class="example-wrapper">
         <h1>Total sum: {{ totalSum }}!</h1>
+        <h1>Total sum with tax: {{ totalSumWithTax }}!</h1>
         <h2>List of goods in basket</h2>
         <ul>
             {% for product in products %}
                 <li>
-                    <p>{{ product.name }}</p>
+                    <p>{{ product.name }} x{{ product.count }}</p>
                 </li>
             {% endfor %}
         </ul>

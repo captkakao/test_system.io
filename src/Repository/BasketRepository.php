@@ -47,7 +47,7 @@ class BasketRepository extends ServiceEntityRepository
      */
     public function getCount(int $buserId)
     {
-        $query = $this->getEntityManager()->createQuery("SELECT COUNT(b) FROM App\Entity\Basket b WHERE b.buser = ?1");
+        $query = $this->getEntityManager()->createQuery("SELECT SUM(b.count) FROM App\Entity\Basket b WHERE b.buser = ?1");
         $query->setParameter(1, $buserId);
 
         return $query->getSingleScalarResult();
@@ -57,7 +57,7 @@ class BasketRepository extends ServiceEntityRepository
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('g.id, g.name, g.price')
+            ->select('g.id, g.name, g.price, b.count')
             ->from('App\Entity\Basket', 'b')
             ->leftJoin('b.good', 'g')
             ->where('b.buser = :userId')

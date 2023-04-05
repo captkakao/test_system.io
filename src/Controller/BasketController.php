@@ -13,18 +13,32 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BasketController extends AbstractController
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly BasketRepository $basketRepository)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly BasketRepository $basketRepository
+    ) {
     }
 
     #[Route('/basket/add/{goodId}', name: 'basket_add_good')]
     public function addGood(Request $request, int $goodId): Response
     {
+        $currentUser    = $this->getUser();
         $goodRepository = $this->entityManager->getRepository(Good::class);
-        $good = $goodRepository->find($goodId);
-        $basket = new Basket($this->getUser(), $good);
+        $good           = $goodRepository->find($goodId);
 
-        $this->basketRepository->save($basket, true);
+        $basketItem = $this->basketRepository->findOneBy([
+            'buser' => $currentUser->getId(),
+            'good'  => $good->getId(),
+        ]);
+
+        if ($basketItem) {
+            $basketItem->setCount($basketItem->getCount() + 1);
+            $this->entityManager->persist($basketItem);
+            $this->entityManager->flush();
+        } else {
+            $basket = new Basket($currentUser, $good);
+            $this->basketRepository->save($basket, true);
+        }
 
         $this->addFlash('success', $good->getName() . ' added to basket!');
         $route = $request->headers->get('referer');
@@ -36,16 +50,19 @@ class BasketController extends AbstractController
     public function proceedCheckout(): Response
     {
         $basketRepository = $this->entityManager->getRepository(Basket::class);
-        $products = $basketRepository->findProductsByUserId($this->getUser()->getId());
+        $products         = $basketRepository->findProductsByUserId($this->getUser()->getId());
 
         $totalSum = 0;
         foreach ($products as $product) {
             $totalSum += $product['price'];
         }
+        $taxPercentage   = 24;
+        $totalSumWithTax = $totalSum + ($totalSum * $taxPercentage) / 100;
 
         $viewData = [
-            'products' => $products,
-            'totalSum' => $totalSum,
+            'products'        => $products,
+            'totalSum'        => $totalSum,
+            'totalSumWithTax' => $totalSumWithTax,
         ];
 
         return $this->render('basket/proceed_checkout.html.twig', $viewData);
