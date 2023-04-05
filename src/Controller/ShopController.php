@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Basket;
 use App\Repository\ShopRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ShopController extends AbstractController
 {
-    public function __construct(private readonly ShopRepository $shopRepository)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly ShopRepository $shopRepository)
     {
     }
 
@@ -32,8 +34,13 @@ class ShopController extends AbstractController
     {
         $shopWithGoods = $this->shopRepository->findOneByIdJoinedToGood($shopId);
 
-        return $this->render('shop/detail.html.twig', [
-            'shopWithGoods' => $shopWithGoods,
-        ]);
+        $viewData['shopWithGoods'] = $shopWithGoods;
+
+        if ($currentUser = $this->getUser()) {
+            $basketRepository = $this->entityManager->getRepository(Basket::class);
+            $viewData['basketItemCount'] = $basketRepository->getCount($currentUser->getId());
+        }
+
+        return $this->render('shop/detail.html.twig', $viewData);
     }
 }

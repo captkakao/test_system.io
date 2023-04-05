@@ -21,10 +21,23 @@
         <h1>{{ shopWithGoods.name }}</h1>
         <h3>{{ shopWithGoods.description }}</h3>
 
+        {% for message in app.flashes('success') %}
+            <div class="flash-notice">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% if basketItemCount is defined %}
+            <p>{{ basketItemCount }} items in the basket</p>
+            <a href="{{ path('basket_proceed_checkout') }}">Proceed to checkout</a>
+        {% else %}
+            <p>Basket is empty</p>
+        {% endif %}
+
         <ul>
             {% for good in shopWithGoods.goods %}
                 <li>
-                    <p>{{ good.name }} <a href="#">add to cart</a></p>
+                    <p>{{ good.name }} <a href="{{ path('basket_add_good', {goodId: good.id}) }}">add to cart</a></p>
                 </li>
             {% endfor %}
         </ul>
