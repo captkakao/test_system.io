@@ -16,8 +16,9 @@ class BasketController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly BasketRepository $basketRepository
-    ) {
+        private readonly BasketRepository       $basketRepository
+    )
+    {
     }
 
     #[Route('/basket/add/{goodId}', name: 'basket_add_good')]
@@ -30,11 +31,11 @@ class BasketController extends AbstractController
         }
 
         $goodRepository = $this->entityManager->getRepository(Good::class);
-        $good           = $goodRepository->find($goodId);
+        $good = $goodRepository->find($goodId);
 
         $basketItem = $this->basketRepository->findOneBy([
             'buser' => $currentUser->getId(),
-            'good'  => $good->getId(),
+            'good' => $good->getId(),
         ]);
 
         if ($basketItem) {
@@ -55,8 +56,8 @@ class BasketController extends AbstractController
     #[Route('/basket/proceed-checkout', name: 'basket_proceed_checkout')]
     public function proceedCheckout(): Response
     {
-        $basketRepository     = $this->entityManager->getRepository(Basket::class);
-        $products             = $basketRepository->findProductsByUserId($this->getUser()->getId());
+        $basketRepository = $this->entityManager->getRepository(Basket::class);
+        $goods = $basketRepository->findGoodsByUserId($this->getUser()->getId());
         $countryTaxRepository = $this->entityManager->getRepository(CoutryTax::class);
 
         $countryTax = $countryTaxRepository->findOneBy([
@@ -64,14 +65,14 @@ class BasketController extends AbstractController
         ]);
 
         $totalSum = 0;
-        foreach ($products as $product) {
-            $totalSum += $product['price'] * $product['count'];
+        foreach ($goods as $good) {
+            $totalSum += $good['price'] * $good['count'];
         }
         $totalSumWithTax = $totalSum + ($totalSum * $countryTax->getTaxPercentage()) / 100;
 
         $viewData = [
-            'products'        => $products,
-            'totalSum'        => $totalSum,
+            'goods' => $goods,
+            'totalSum' => $totalSum,
             'totalSumWithTax' => $totalSumWithTax,
         ];
 

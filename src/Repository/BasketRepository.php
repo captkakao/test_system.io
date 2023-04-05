@@ -53,7 +53,7 @@ class BasketRepository extends ServiceEntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function findProductsByUserId(int $buserId)
+    public function findGoodsByUserId(int $buserId)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()

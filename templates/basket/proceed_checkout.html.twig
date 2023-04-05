@@ -24,9 +24,10 @@
         </div>
         <h3>List of goods in basket</h3>
         <ul>
-            {% for product in products %}
+            {% for good in goods %}
                 <li>
-                    <p>{{ product.name }} x{{ product.count }}</p>
+                    <p>{{ good.name }} x{{ good.count }}</p>
+                    <p>Price: {{ good.price * good.count }}</p>
                 </li>
             {% endfor %}
         </ul>
