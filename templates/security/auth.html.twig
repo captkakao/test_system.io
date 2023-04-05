@@ -1,7 +1,13 @@
-{% if app.user %}
-    <p>{{ app.user.userIdentifier }}</p>
-    <a class="link" href="{{ path('app_logout') }}">Logout</a>
-{% else %}
-    <a class="link" href="{{ path('app_login') }}">Login</a>
-    <a class="link" href="{{ path('app_register') }}">Registration</a>
-{% endif %}
+<div style="padding: 10px; display: flex; justify-content: right;">
+    {% if app.user %}
+        <div style="display: flex; gap: 10px">
+            <p>{{ app.user.userIdentifier }}</p>
+            <p><a class="link" href="{{ path('app_logout') }}">Logout</a></p>
+        </div>
+    {% else %}
+        <div style="display: flex; gap: 10px">
+            <a class="link" href="{{ path('app_login') }}">Login</a>
+            <a class="link" href="{{ path('app_register') }}">Registration</a>
+        </div>
+    {% endif %}
+</div>

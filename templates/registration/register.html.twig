@@ -3,9 +3,19 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <style>
+        .example-wrapper {
+            margin: 1em auto;
+            max-width: 800px;
+            width: 95%;
+            font: 18px/1.5 sans-serif;
+        }
+    </style>
 
-    {{ form_start(registrationForm) }}
+    <div class="example-wrapper" style="justify-content: center">
+        <h1>Registration</h1>
+
+        {{ form_start(registrationForm) }}
         {{ form_row(registrationForm.email, {
             label: 'Email'
         }) }}
@@ -17,5 +27,6 @@
         }) }}
 
         <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+        {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}
