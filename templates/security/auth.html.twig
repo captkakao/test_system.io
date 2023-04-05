@@ -1,0 +1,7 @@
+{% if app.user %}
+    <p>{{ app.user.userIdentifier }}</p>
+    <a class="link" href="{{ path('app_logout') }}">Logout</a>
+{% else %}
+    <a class="link" href="{{ path('app_login') }}">Login</a>
+    <a class="link" href="{{ path('app_register') }}">Registration</a>
+{% endif %}
