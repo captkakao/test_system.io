@@ -39,8 +39,8 @@ dc_rebuild_up:
 # App
 ##################
 app_install:
-	${DOCKER_COMPOSE} exec -u www-data php-fpm cp .env.example .env
 	${DOCKER_COMPOSE} exec -u www-data php-fpm composer install
+	${DOCKER_COMPOSE} exec -u www-data php-fpm php bin/console doctrine:fixtures:load --no-interaction
 
 app_bash:
 	${DOCKER_COMPOSE} exec -u www-data php-fpm bash
