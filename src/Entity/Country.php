@@ -20,6 +20,9 @@ class Country
     #[ORM\Column(length: 255)]
     private ?string $code = null;
 
+    #[ORM\OneToOne(mappedBy: 'country', cascade: ['persist', 'remove'])]
+    private ?CoutryTax $coutryTax = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +48,23 @@ class Country
     public function setCode(string $code): self
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    public function getCoutryTax(): ?CoutryTax
+    {
+        return $this->coutryTax;
+    }
+
+    public function setCoutryTax(CoutryTax $coutryTax): self
+    {
+        // set the owning side of the relation if necessary
+        if ($coutryTax->getCountry() !== $this) {
+            $coutryTax->setCountry($this);
+        }
+
+        $this->coutryTax = $coutryTax;
 
         return $this;
     }

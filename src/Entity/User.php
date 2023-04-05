@@ -35,6 +35,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'buser', targetEntity: Basket::class)]
     private Collection $baskets;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Country $country = null;
+
     public function __construct()
     {
         $this->baskets = new ArrayCollection();
@@ -157,6 +161,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $basket->setBuser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCountry(): ?Country
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?Country $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }

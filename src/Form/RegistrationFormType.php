@@ -15,7 +15,7 @@ class RegistrationFormType extends AbstractType
     {
         $countryChoices = $options['data']['countryChoices'];
 
-        $builder->add('countryCode', ChoiceType::class, [
+        $builder->add('countryId', ChoiceType::class, [
             'choices' => $countryChoices,
         ]);
 

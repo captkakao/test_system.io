@@ -29,7 +29,7 @@ class RegistrationController extends AbstractController
         $countries = $entityManager->getRepository(Country::class)->findAll();
         $countryChoices = [];
         foreach ($countries as $country) {
-            $countryChoices[$country->getName()] = $country->getCode();
+            $countryChoices[$country->getName()] = $country->getId();
         }
 
         $formOptions = [
@@ -48,7 +48,10 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            $taxNumber = $form->get('countryCode')->getData() . $this->generateUniqueTaxNumber();
+            $countryRepository = $entityManager->getRepository(Country::class);
+            $country = $countryRepository->find($form->get('countryId')->getData());
+            $user->setCountry($country);
+            $taxNumber = $country->getCode() . $this->generateUniqueTaxNumber();
             $user->setTaxNumber($taxNumber);
             $entityManager->persist($user);
             $entityManager->flush();
